@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personality Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>ŠwZ‚Å‚Ç‚±‚ÉŠ‘®‚·‚éH</h1>
+
+  <form id="personalityTestForm">
+    <label for="answer1">¿–â1: ‘–‚é‚Ì‚ÍD‚«‚Å‚·‚©H (‚Í‚¢/‚¢‚¢‚¦)</label>
+    <input type="text" id="answer1" name="answer1" required>
+
+    <label for="answer2">¿–â2: “Ç‘‚ÍD‚«‚Å‚·‚©H (‚Í‚¢/‚¢‚¢‚¦)</label>
+    <input type="text" id="answer2" name="answer2" required>
+
+    <button type="button" onclick="calculatePersonalityType()">f’f‚·‚é</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    function calculatePersonalityType() {
+      const answer1 = document.getElementById("answer1").value.trim().toLowerCase();
+      const answer2 = document.getElementById("answer2").value.trim().toLowerCase();
+      let personalityType = "";
+
+      if (answer1 === "‚Í‚¢" && answer2 === "‚Í‚¢") {
+        personalityType = "‚ ‚È‚½‚Í¶“k‰ï‚Å‚·";
+      } else if (answer1 === "‚Í‚¢" && answer2 === "‚¢‚¢‚¦") {
+        personalityType = "‚ ‚È‚½‚Í‰^“®•”‚Å‚·";
+      } else if (answer1 === "‚¢‚¢‚¦" && answer2 === "‚Í‚¢") {
+        personalityType = "‚ ‚È‚½‚Í•¶‰»•”‚Å‚·";
+      } else {
+        personalityType = "‚ ‚È‚½‚Í‹A‘î•”‚Å‚·";
+      }
+
+      document.getElementById("result").innerHTML = `Š‘®f’fŒ‹‰Ê: ${personalityType}`;
+    }
+  </script>
+</body>
+</html>
