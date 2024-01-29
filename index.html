@@ -1,78 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Personality Test</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 10px; /* 調整 */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/milligram@1.4.1/dist/milligram.min.css">
+    <style>
+        body {
+            background-color: #f8f8f8;
+            padding: 20px;
+        }
 
-    label {
-      display: block;
-      margin-bottom: 10px;
-    }
+        .chat-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            max-width: 400px;
+            word-wrap: break-word;
+        }
 
-    input {
-      width: 100%; /* 幅を100%に設定 */
-      box-sizing: border-box; /* 幅にpaddingとborderを含める */
-      padding: 10px;
-      margin-bottom: 10px;
-    }
+        .user-message {
+            background-color: #3498db;
+            color: #fff;
+        }
 
-    button {
-      padding: 10px;
-      margin-top: 10px;
-    }
-
-    #result {
-      margin-top: 20px;
-    }
-
-    @media (min-width: 600px) {
-      /* 600px以上の場合のスタイル調整 */
-      body {
-        margin: 50px;
-      }
-    }
-  </style>
+        .bot-message {
+            background-color: #2ecc71;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-  <h1>学校でどこに所属する？</h1>
 
-  <form id="personalityTestForm">
-    <label for="answer1">質問1: 走るのは好きですか？ (はい/いいえ)</label>
-    <input type="text" id="answer1" name="answer1" required>
+<div class="container">
+    <h1>ChatBot App</h1>
 
-    <label for="answer2">質問2: 読書は好きですか？ (はい/いいえ)</label>
-    <input type="text" id="answer2" name="answer2" required>
+    <div id="chat-container" class="chat-box"></div>
 
-    <button type="button" onclick="calculatePersonalityType()">診断する</button>
-  </form>
+    <div class="chat-box">
+        <label for="user-response">Your Response:</label>
+        <input type="text" id="user-response" class="input-control" placeholder="Type your response...">
+        <button onclick="askQuestion()" class="button">Submit</button>
+    </div>
+</div>
 
-  <div id="result"></div>
+<script>
+    function askQuestion() {
+        const readingQuestion = prompt("読書は好きですか？ (はい/いいえ)");
+        const runningQuestion = prompt("走るのは好きですか？ (はい/いいえ)");
+        let result;
 
-  <script>
-    function calculatePersonalityType() {
-      const answer1 = document.getElementById("answer1").value.trim().toLowerCase();
-      const answer2 = document.getElementById("answer2").value.trim().toLowerCase();
-      let personalityType = "";
+        if (readingQuestion === "はい" && runningQuestion === "はい") {
+            result = "生徒会";
+        } else if (readingQuestion === "はい" && runningQuestion === "いいえ") {
+            result = "文化部";
+        } else if (readingQuestion === "いいえ" && runningQuestion === "はい") {
+            result = "運動部";
+        } else if (readingQuestion === "いいえ" && runningQuestion === "いいえ") {
+            result = "帰宅部";
+        } else {
+            result = "不明";
+        }
 
-      if (answer1 === "はい" && answer2 === "はい") {
-        personalityType = "あなたは生徒会です";
-      } else if (answer1 === "はい" && answer2 === "いいえ") {
-        personalityType = "あなたは運動部です";
-      } else if (answer1 === "いいえ" && answer2 === "はい") {
-        personalityType = "あなたは文化部です";
-      } else {
-        personalityType = "あなたは帰宅部です";
-      }
-
-      document.getElementById("result").innerHTML = `所属診断結果: ${personalityType}`;
+        displayMessage(`あなたの所属は「${result}」です。`, 'bot-message');
     }
-  </script>
+
+    function displayMessage(message, className) {
+        const chatContainer = document.getElementById('chat-container');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-box ${className}`;
+        messageDiv.textContent = message;
+        chatContainer.appendChild(messageDiv);
+    }
+</script>
+
 </body>
 </html>
