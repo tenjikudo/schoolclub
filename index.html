@@ -1,78 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatBot App</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/milligram@1.4.1/dist/milligram.min.css">
-    <style>
-        body {
-            background-color: #f8f8f8;
-            padding: 20px;
-        }
-
-        .chat-box {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            max-width: 400px;
-            word-wrap: break-word;
-        }
-
-        .user-message {
-            background-color: #3498db;
-            color: #fff;
-        }
-
-        .bot-message {
-            background-color: #2ecc71;
-            color: #fff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+  <title>所属診断アプリ</title>
+  <style>
+    body {
+      margin: 2em;
+    }
+    #chat-box {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>ChatBot App</h1>
-
-    <div id="chat-container" class="chat-box"></div>
-
-    <div class="chat-box">
-        <label for="user-response">Your Response:</label>
-        <input type="text" id="user-response" class="input-control" placeholder="Type your response...">
-        <button onclick="askQuestion()" class="button">Submit</button>
-    </div>
-</div>
+<div id="chat-box"></div>
 
 <script>
-    function askQuestion() {
-        const readingQuestion = prompt("読書は好きですか？ (はい/いいえ)");
-        const runningQuestion = prompt("走るのは好きですか？ (はい/いいえ)");
-        let result;
+function showQuestion(question, callback) {
+  const chatBox = document.getElementById('chat-box');
+  const newQuestion = document.createElement('div');
+  newQuestion.className = 'question';
+  newQuestion.textContent = question;
+  chatBox.appendChild(newQuestion);
 
-        if (readingQuestion === "はい" && runningQuestion === "はい") {
-            result = "生徒会";
-        } else if (readingQuestion === "はい" && runningQuestion === "いいえ") {
-            result = "文化部";
-        } else if (readingQuestion === "いいえ" && runningQuestion === "はい") {
-            result = "運動部";
-        } else if (readingQuestion === "いいえ" && runningQuestion === "いいえ") {
-            result = "帰宅部";
-        } else {
-            result = "不明";
-        }
+  const answerInput = document.createElement('input');
+  answerInput.type = 'text';
+  answerInput.className = 'answer-input';
+  chatBox.appendChild(answerInput);
 
-        displayMessage(`あなたの所属は「${result}」です。`, 'bot-message');
+  const answerButton = document.createElement('button');
+  answerButton.textContent = '回答する';
+  answerButton.addEventListener('click', function() {
+    const answer = answerInput.value.trim();
+    if (answer !== '') {
+      callback(answer);
+    }
+  });
+  chatBox.appendChild(answerButton);
+}
+
+function showResult(result) {
+  const chatBox = document.getElementById('chat-box');
+  const resultMessage = document.createElement('div');
+  resultMessage.className = 'result';
+  resultMessage.textContent = `あなたの所属は「${result}」です。`;
+  chatBox.appendChild(resultMessage);
+}
+
+showQuestion("読書は好きですか？ (はい/いいえ)", function(readingAnswer) {
+  showQuestion("走るのは好きですか？ (はい/いいえ)", function(runningAnswer) {
+    let result;
+
+    if (readingAnswer === "はい" && runningAnswer === "はい") {
+      result = "生徒会";
+    } else if (readingAnswer === "はい" && runningAnswer === "いいえ") {
+      result = "文化部";
+    } else if (readingAnswer === "いいえ" && runningAnswer === "はい") {
+      result = "運動部";
+    } else if (readingAnswer === "いいえ" && runningAnswer === "いいえ") {
+      result = "帰宅部";
+    } else {
+      result = "不明";
     }
 
-    function displayMessage(message, className) {
-        const chatContainer = document.getElementById('chat-container');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-box ${className}`;
-        messageDiv.textContent = message;
-        chatContainer.appendChild(messageDiv);
-    }
+    showResult(result);
+  });
+});
 </script>
 
 </body>
