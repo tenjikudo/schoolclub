@@ -1,76 +1,117 @@
+<!-- チャットボットプログラムの雛形 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
-  <title>所属診断アプリ</title>
-  <style>
-    body {
-      margin: 2em;
-    }
-    #chat-box {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>性格診断チャットボット</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
 </head>
 <body>
+    <style>
+        /* 追加のスタイリングをここに記述 */
+    </style>
 
-<div id="chat-box"></div>
+    <div class="container">
+        <h1 class="title">性格診断チャットボット</h1>
+        <div class="chat-box">
+            <div class="message">
+                <div class="message-content">性格診断を始めましょう！</div>
+            </div>
+        </div>
+        <div class="input-box">
+            <input id="user-input" class="input" type="text" placeholder="Type your answer">
+            <button id="send-button" class="button is-primary">Send</button>
+        </div>
+    </div>
 
-<script>
-function showQuestion(question, callback) {
-  const chatBox = document.getElementById('chat-box');
-  const newQuestion = document.createElement('div');
-  newQuestion.className = 'question';
-  newQuestion.textContent = question;
-  chatBox.appendChild(newQuestion);
+    <script>
+        let questions = [
+            "質問1: 一人で過ごすのは好きですか？ (Yes/No)",
+            "質問2: 外出するのは好きですか？ (Yes/No)",
+            // 他の質問も追加できます...
+        ];
+        let currentQuestionIndex = 0;
+        let answers = [];
+        let validAnswers = [];
 
-  const answerInput = document.createElement('input');
-  answerInput.type = 'text';
-  answerInput.className = 'answer-input';
-  chatBox.appendChild(answerInput);
+        // メッセージを送信する関数
+        function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim();
 
-  const answerButton = document.createElement('button');
-  answerButton.textContent = '回答する';
-  answerButton.addEventListener('click', function() {
-    const answer = answerInput.value.trim();
-    if (answer !== '') {
-      callback(answer);
-    }
-  });
-  chatBox.appendChild(answerButton);
-}
+            if (message !== '') {
+                appendMessage('user', message); // ユーザーの回答を表示
+                answers.push(message);
 
-function showResult(result) {
-  const chatBox = document.getElementById('chat-box');
-  const resultMessage = document.createElement('div');
-  resultMessage.className = 'result';
-  resultMessage.textContent = `あなたの所属は「${result}」です。`;
-  chatBox.appendChild(resultMessage);
-}
+								// TODO: ユーザーが予想外の回答をした場合の返答をAIにさせたい
+                if (message != 'Yes' && message != 'No') {
+                    appendMessage('bot', 'YesかNoで答えてください。');
+                    appendMessage('bot', questions[currentQuestionIndex]);
+                    userInput.value = '';
+                    return;
+                }
 
-showQuestion("読書は好きですか？ (はい/いいえ)", function(readingAnswer) {
-  showQuestion("走るのは好きですか？ (はい/いいえ)", function(runningAnswer) {
-    let result;
+                validAnswers.push(message);
 
-    if (readingAnswer === "はい" && runningAnswer === "はい") {
-      result = "生徒会";
-    } else if (readingAnswer === "はい" && runningAnswer === "いいえ") {
-      result = "文化部";
-    } else if (readingAnswer === "いいえ" && runningAnswer === "はい") {
-      result = "運動部";
-    } else if (readingAnswer === "いいえ" && runningAnswer === "いいえ") {
-      result = "帰宅部";
-    } else {
-      result = "不明";
-    }
+                // 次の質問に進むか、結果を表示するかを判断
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    appendMessage('bot', questions[currentQuestionIndex]);
+                } else {
+                    // ここで性格診断結果を計算し、表示
+                    const personalityResult = calculatePersonality(validAnswers);
+                    appendMessage('bot', `診断結果: ${personalityResult}`);
 
-    showResult(result);
-  });
-});
-</script>
+                }
 
+                userInput.value = ''; // 入力フィールドをクリア
+            }
+        }
+
+        // メッセージを表示する関数
+        function appendMessage(sender, text) {
+            const chatBox = document.querySelector('.chat-box');
+            const message = document.createElement('div');
+            message.classList.add('message', sender === 'bot' ? 'is-primary' : 'is-link');
+            message.innerHTML = `<div class="message-content">${text}</div>`;
+            chatBox.appendChild(message);
+
+            // チャットボットの応答を自動スクロールで表示
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // 送信ボタンにイベントリスナーを追加
+        const sendButton = document.getElementById('send-button');
+        sendButton.addEventListener('click', sendMessage);
+
+        // ユーザーがEnterキーを押した場合もメッセージを送信
+        const userInput = document.getElementById('user-input');
+        userInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // チャットボットに最初の質問を表示
+        appendMessage('bot', questions[currentQuestionIndex]);
+
+        // 性格診断のロジックを実装
+        function calculatePersonality(answers) {
+            // ここでユーザーの回答を元に性格を計算するロジックを実装
+            // 例: 回答を分析し、特定の性格タイプに関連付ける
+            // 実際の性格診断ロジックは複雑なものである場合が多いため、簡略化しています
+
+            if (answers[0] === 'Yes' && answers[1] === 'Yes') {
+                return '一匹狼';
+            } else if (answers[0] === 'Yes' && answers[1] === 'No') {
+                return '内向的な性格'
+            } else if (answers[0] === 'No' && answers[1] === 'Yes') {
+                return '外向的な性格';
+            } else {
+                return 'マイルドヤンキーな性格';
+            }
+        }
+    </script>
 </body>
 </html>
